@@ -1,0 +1,47 @@
+<settings>
+  <div>
+    <h3>Settings</h3>
+    <form>
+      <label for="fromBook">From Book</label>
+      <select id="fromBook" name="fromBook">
+        <option each={languageOptions} value={id}>{label}</option>
+      </select>
+      <br />
+      <label for="toBook">To Book</label>
+      <select id="settingsMixin.toBook" name="toBook" onchange="{settingChanged}">
+        <option each={languageOptions} value={id}>{label}</option>
+      </select>
+    </form>
+  </div>
+
+  <script>
+    var self = this;
+    self.on = true;
+    
+    this.languageOptions = [
+      {id: "asv", label: "American Standard Version (ASV)"},
+      {id: "asv", label: "English Standard Version (ESV)"},
+      {id: "nhun", label: "Hungarian (NEW)"},
+      {id: "greek", label: "Greek"}
+    ];
+    
+    var themeOptions = ["light", "dark", "papyrus"];
+    
+    var defaults = {
+      fromBook: "esv",
+      toBook: "nhun",
+      theme: "light",
+      showSecondBook: true
+    };
+    
+    self.settingsMixin = $.extend({}, defaults);
+    riot.mixin("settingsMixin", self.settingsMixin);
+    var oldSettings = JSON.stringify(self.settingsMixin);
+    
+    self.settingChanged = function(e) {
+      console.log("WOOOOT what's going on ..");
+      console.log(e);
+      console.log(JSON.parse(oldSettings), self.settingsMixin);
+    }
+  </script>
+</settings>
