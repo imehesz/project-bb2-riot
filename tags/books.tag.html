@@ -1,0 +1,25 @@
+<books>
+  <div>
+    <span if={books.length==0}>loading books ...</span>
+    <div each="{books}">
+      <a href="javascript:void(0);" onclick={setBook}>{shortHeader}</a>
+    </div>
+    <chapters></chapters>
+  </div>
+  <script>
+    console.log("BOOKS RUNNING!");
+    var self = this;
+    
+    self.books = [];
+    
+    M.Events.subscribe("books_loaded", function(books){
+      console.log("yup, books loaded...", books);
+      self.books = books;
+      riot.update();
+    });
+    
+    this.setBook = function(e) {
+      riot.route("/" + e.item.id);
+    }
+  </script>
+</books>

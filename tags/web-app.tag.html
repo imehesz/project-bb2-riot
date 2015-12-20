@@ -1,0 +1,27 @@
+<web-app>
+  <div>
+    WEBAPP
+    <books></books>
+  </div>
+  <script>
+    var router = function(bookId, chapterId) {
+      if (bookId && !chapterId) {
+        M.Events.publish("book_changed", {bookId: bookId});
+      }
+      
+      if (bookId && chapterId) {
+        M.Events.publish("chapter_changed", {bookId: bookId, chapterId: chapterId});
+      }
+    }
+    
+    $.get("https://imehesz.firebaseio.com/bookdata.json", function(data){
+      M.Events.publish("books_loaded", data.books);
+    });
+    
+    // Riot router
+    riot.route(router);
+
+    // Execute router function once for rendering the items
+    riot.route.exec(router);
+  </script>
+</web-app>

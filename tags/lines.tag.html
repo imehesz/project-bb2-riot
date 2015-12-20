@@ -1,0 +1,20 @@
+<lines>
+  <div>
+    LINES
+    <div each="{lines}">
+      <sup>{id}</sup> {text}
+    </div>
+  </div>
+  
+  <script>
+    var self = this;
+    self.lines = [];
+    
+    M.Events.subscribe("chapter_changed", function(o){
+      $.get("https://imehesz.firebaseio.com/bookdata.json?bookId=" + o.bookId + "&chapterId=" + o.chapterId, function(data){
+        self.lines = data.lines;
+  	    riot.update();
+      });
+    });
+  </script>
+</lines>
