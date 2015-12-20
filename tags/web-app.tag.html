@@ -1,5 +1,6 @@
 <web-app>
   <div>
+    <settings></settings>
     WEBAPP
     <books></books>
   </div>
@@ -12,11 +13,13 @@
       if (bookId && chapterId) {
         M.Events.publish("chapter_changed", {bookId: bookId, chapterId: chapterId});
       }
+      
+      if (!bookId && !chapterId) {
+        $.get("https://imehesz.firebaseio.com/bookdata.json", function(data){
+          M.Events.publish("books_loaded", data.books);
+        });        
+      }
     }
-    
-    $.get("https://imehesz.firebaseio.com/bookdata.json", function(data){
-      M.Events.publish("books_loaded", data.books);
-    });
     
     // Riot router
     riot.route(router);

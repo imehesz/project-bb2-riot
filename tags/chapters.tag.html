@@ -9,8 +9,13 @@
   <script>
     var self = this;
     
-    self.chapters = [];
-    self.bookObj = null;
+    var reset = function() {
+      self.chapters = [];
+      self.bookObj = null;
+      riot.update();
+    }
+    
+    M.Events.subscribe("books_loaded", reset);
     
     M.Events.subscribe('book_changed', function(bookObj) {
       self.bookObj = bookObj;
@@ -24,5 +29,7 @@
         riot.route("/" + self.bookObj.bookId + "/" + e.item.chapter);
       }
   	});
+  	
+  	reset();
   </script>
 </chapters>

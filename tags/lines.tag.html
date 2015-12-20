@@ -8,13 +8,23 @@
   
   <script>
     var self = this;
-    self.lines = [];
+    
+    var reset = function() {
+      console.log("reset lines...");
+      self.lines = [];
+      riot.update();
+    }
+    
+    M.Events.subscribe("book_changed", reset);
     
     M.Events.subscribe("chapter_changed", function(o){
+      console.log("chapter changed", o);
       $.get("https://imehesz.firebaseio.com/bookdata.json?bookId=" + o.bookId + "&chapterId=" + o.chapterId, function(data){
         self.lines = data.lines;
   	    riot.update();
       });
     });
+    
+    reset();
   </script>
 </lines>
