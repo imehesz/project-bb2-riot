@@ -1,31 +1,65 @@
 <settings>
-  <div>
-    <h3>Settings</h3>
-    <form>
-      <label for="fromBook">From Book</label>
-      <select id="fromBook" name="fromBook">
-        <option each={languageOptions} value={id}>{label}</option>
-      </select>
-      <br />
-      <label for="toBook">To Book</label>
-      <select id="settingsMixin.toBook" name="toBook" onchange="{settingChanged}">
-        <option each={languageOptions} value={id}>{label}</option>
-      </select>
-    </form>
+  <div >
+    <div title="Toggle Settings">
+      <input type="checkbox" checked="{ui.on}" onchange="{toggleOn}"/> 
+    </div>
+    <div if={ui.on}>
+      <h3>Settings</h3>
+      <form>
+        <label for="fromBook">From Book</label>
+        <select id="fromBook" onChange="{fromBookChanged}">
+          <option 
+            each={languageOptions} 
+            value={id} 
+            disabled={settingsMixin.toBook==id}
+            selected={settingsMixin.fromBook==id}>
+              {label}
+          </option>
+        </select>
+        <br />
+        <label for="toBook">To Book</label>
+        <select id="toBook" onchange="{toBookChanged}">
+          <option 
+            each={languageOptions} 
+            value={id} 
+            disabled={settingsMixin.fromBook==id}
+            selected={settingsMixin.toBook==id}>
+              {label}
+          </option>
+        </select>
+        <br />
+        <label for="theme">Theme</label>
+        <select id="theme" onchange="{themeChanged}">
+          <option each="{theme in themeOptions}" value="{theme}">{ui.capitalize(theme)}</option>
+        </select>
+        <br />
+        <label for="showsecond">Show Second Book</label>
+        <input type="checkbox" checked="{settingsMixin.showSecondBook}" onchange="{toggleSecondBook}"/>
+      </form>
+    </div>
+    <hr>
   </div>
 
   <script>
     var self = this;
-    self.on = true;
+    var SETTINGS = typeof BB_SETTINGS != "undefined" ? BB_SETTINGS : {};
     
-    this.languageOptions = [
+    self.ui = {
+      on: true,
+      capitalize: function(str) {
+        return str[0].toUpperCase() + str.substr(1,str.length);
+      }
+    };
+    
+    this.languageOptions = SETTINGS.languageOptions || [
       {id: "asv", label: "American Standard Version (ASV)"},
-      {id: "asv", label: "English Standard Version (ESV)"},
+      {id: "esv", label: "English Standard Version (ESV)"},
       {id: "nhun", label: "Hungarian (NEW)"},
-      {id: "greek", label: "Greek"}
+      {id: "greek", label: "Greek"},
+      {id: "moo", label: "Moo"}
     ];
     
-    var themeOptions = ["light", "dark", "papyrus"];
+    this.themeOptions = SETTINGS.themeOptions || ["light", "dark", "papyrus"];
     
     var defaults = {
       fromBook: "esv",
@@ -36,12 +70,34 @@
     
     self.settingsMixin = $.extend({}, defaults);
     riot.mixin("settingsMixin", self.settingsMixin);
+    
     var oldSettings = JSON.stringify(self.settingsMixin);
     
-    self.settingChanged = function(e) {
-      console.log("WOOOOT what's going on ..");
-      console.log(e);
-      console.log(JSON.parse(oldSettings), self.settingsMixin);
-    }
+    self.fromBookChanged = function(el) {
+      self.settingsMixin.fromBook = $(el.target).val();
+    };
+    
+    self.toBookChanged = function(el) {
+      self.settingsMixin.toBook = $(el.target).val();
+    };
+    
+    self.themeChanged = function(el) {
+      self.settingsMixin.theme = $(el.target).val();
+    };
+    
+    self.toggleSecondBook = function(el) {
+      self.settingsMixin.showSecondBook = !self.settingsMixin.showSecondBook;
+    };
+    
+    self.toggleOn = function() {
+      self.ui.on = !self.ui.on;
+      
+      if (!self.ui.on && oldSettings != JSON.stringify(self.settingsMixin)) {
+        console.log(JSON.parse(oldSettings), self.settingsMixin);
+        
+        // TODO save it to localstorage
+        oldSettings = JSON.stringify(self.settingsMixin);
+      }
+    };
   </script>
 </settings>
