@@ -12,7 +12,6 @@
     var reset = function() {
       console.log("reset lines...");
       self.lines = [];
-      riot.update();
     }
     
     M.Events.subscribe("book_changed", reset);
@@ -20,8 +19,9 @@
     M.Events.subscribe("chapter_changed", function(o){
       console.log("chapter changed", o);
       $.get("https://imehesz.firebaseio.com/bookdata.json?bookId=" + o.bookId + "&chapterId=" + o.chapterId, function(data){
+        console.log("AJAX IS BACK!");
         self.lines = data.lines;
-  	    riot.update();
+  	    self.update();
       });
     });
     
