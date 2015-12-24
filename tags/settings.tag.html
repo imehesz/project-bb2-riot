@@ -1,5 +1,5 @@
 <settings>
-  <div >
+  <div>
     <div title="Toggle Settings">
       <input type="checkbox" checked="{ui.on}" onchange="{toggleOn}"/> 
     </div>
@@ -11,8 +11,8 @@
           <option 
             each={languageOptions} 
             value={id} 
-            disabled={settingsMixin.toBook==id}
-            selected={settingsMixin.fromBook==id}>
+            disabled={settings.toBook==id}
+            selected={settings.fromBook==id}>
               {label}
           </option>
         </select>
@@ -22,8 +22,8 @@
           <option 
             each={languageOptions} 
             value={id} 
-            disabled={settingsMixin.fromBook==id}
-            selected={settingsMixin.toBook==id}>
+            disabled={settings.fromBook==id}
+            selected={settings.toBook==id}>
               {label}
           </option>
         </select>
@@ -34,13 +34,16 @@
         </select>
         <br />
         <label for="showsecond">Show Second Book</label>
-        <input type="checkbox" checked="{settingsMixin.showSecondBook}" onchange="{toggleSecondBook}"/>
+        <input type="checkbox" checked="{settings.showSecondBook}" onchange="{toggleSecondBook}"/>
       </form>
     </div>
     <hr>
   </div>
 
   <script>
+    /* global M */
+    /* global BB_SETTINGS */
+    
     var self = this;
     var SETTINGS = typeof BB_SETTINGS != "undefined" ? BB_SETTINGS : {};
     
@@ -68,35 +71,42 @@
       showSecondBook: true
     };
     
-    self.settingsMixin = $.extend({}, defaults);
-    riot.mixin("settingsMixin", self.settingsMixin);
+    if (M.Storage.get("settings")) {
+      self.settings = $.extend({}, M.Storage.get("settings") );
+    } else {
+      self.settings = $.extend({}, defaults);
+      M.Storage.set("settings", self.settings);
+      M.Events.publish("settings_init", self.settings);
+    }
     
-    var oldSettings = JSON.stringify(self.settingsMixin);
+    console.log(M.Storage.get("settings"));
+    
+    var oldSettings = JSON.stringify(self.settings);
     
     self.fromBookChanged = function(el) {
-      self.settingsMixin.fromBook = $(el.target).val();
+      self.settings.fromBook = $(el.target).val();
     };
     
     self.toBookChanged = function(el) {
-      self.settingsMixin.toBook = $(el.target).val();
+      self.settings.toBook = $(el.target).val();
     };
     
     self.themeChanged = function(el) {
-      self.settingsMixin.theme = $(el.target).val();
+      self.settings.theme = $(el.target).val();
     };
     
     self.toggleSecondBook = function(el) {
-      self.settingsMixin.showSecondBook = !self.settingsMixin.showSecondBook;
+      self.settings.showSecondBook = !self.settings.showSecondBook;
     };
     
     self.toggleOn = function() {
       self.ui.on = !self.ui.on;
       
-      if (!self.ui.on && oldSettings != JSON.stringify(self.settingsMixin)) {
-        console.log(JSON.parse(oldSettings), self.settingsMixin);
+      if (!self.ui.on && oldSettings != JSON.stringify(self.settings)) {
+        console.log(JSON.parse(oldSettings), self.settings);
         
         // TODO save it to localstorage
-        oldSettings = JSON.stringify(self.settingsMixin);
+        oldSettings = JSON.stringify(self.settings);
       }
     };
   </script>

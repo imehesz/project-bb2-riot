@@ -1,10 +1,14 @@
 <chapters>
   <div>
-    CHAPTERS
-    <div each={chapter in chapters}>
-      <a href="javascript:void(0);" onclick={setChapter}>{chapter}</a>
+      <div if={chapters.length > 0}>
+      CHAPTERS
+      <div each={chapter in chapters}>
+        <a href="javascript:void(0);" onclick={setChapter}>{chapter}</a>
+      </div>
+      
+      <a href="javascript:void(0);" onclick={backToBooks}>< back</a>
+      <lines></lines>
     </div>
-    <lines></lines>
   </div>
   <script>
     var self = this;
@@ -12,16 +16,24 @@
     var reset = function() {
       self.chapters = [];
       self.bookObj = null;
+      self.update();
     }
+    
+    self.backToBooks = function() {
+      riot.route("/");
+    };
     
     M.Events.subscribe("books_loaded", reset);
     
     M.Events.subscribe('book_changed', function(bookObj) {
+      console.log("HEY HUY HAY!");
       self.bookObj = bookObj;
       
-      $.get("https://imehesz.firebaseio.com/bookdata.json?bookId=" + bookObj.bookId, function(data){
+      var settings = M.Storage.get("settings");
+      
+      $.get(M.Storage.get("dataUrl") + "?bookId=" + bookObj.bookId + "&lang=" + settings.fromBook, function(data){
         self.chapters = data.chapters;
-  	    riot.update();
+  	    self.update();
       });
       
       setChapter(e) {

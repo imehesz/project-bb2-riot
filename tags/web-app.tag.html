@@ -5,7 +5,25 @@
     <books></books>
   </div>
   <script>
+    /* global M */
+    /* global BB_SETTINGS */
+    /* global riot */
+    
+    var SETTINGS = typeof BB_SETTINGS != "undefined" ? BB_SETTINGS : {};
+    M.Storage.set("dataUrl", SETTINGS.path || "https://imehesz.firebaseio.com/bookdata.json");
+    
+    var loadBooks = function() {
+      var fromBook = M.Storage.get("settings").fromBook;
+      console.log("MOOOOOOOOOOOOOO", fromBook);
+      
+      $.get(M.Storage.get("dataUrl") + "?lang=" + fromBook, function(data){
+        M.Events.publish("books_loaded", data.books);
+      });      
+    }
+    
     var router = function(bookId, chapterId) {
+      console.log("ROUTER HEY!", bookId, chapterId);
+      
       if (bookId && !chapterId) {
         M.Events.publish("book_changed", {bookId: bookId});
       }
@@ -15,11 +33,11 @@
       }
       
       if (!bookId && !chapterId) {
-        $.get("https://imehesz.firebaseio.com/bookdata.json", function(data){
-          M.Events.publish("books_loaded", data.books);
-        });        
+        loadBooks();
       }
     }
+    
+    M.Events.subscribe("settings_init", loadBooks);
     
     // Riot router
     riot.route(router);

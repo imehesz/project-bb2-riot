@@ -3,6 +3,7 @@
     <span if={books.length==0}>loading books ...</span>
     <div each="{books}">
       <a href="javascript:void(0);" onclick={setBook}>{shortHeader}</a>
+      <a href="#{id}" onclick={setBook}>{shortHeader}</a>
     </div>
     <chapters></chapters>
   </div>
@@ -15,7 +16,7 @@
     M.Events.subscribe("books_loaded", function(books){
       console.log("yup, books loaded...", books);
       self.books = books;
-      riot.update();
+      self.update();
     });
     
     this.setBook = function(e) {

@@ -1,27 +1,64 @@
 <lines>
   <div>
-    LINES
-    <div each="{lines}">
-      <sup>{id}</sup> {text}
+    <div if={lines.one.length >0}>
+      LINES
+      <table>
+        <tr each="{line, i in lines.one}">
+          <td><sup>{line.id}</sup> {line.text}</td>
+          <td if={lines.two.length > 0}</td><sup>{lines.two[i].id}</sup> {lines.two[i].text}</td>
+        </tr>
+      </table>
+      
+      <a href="javascript:void(0);" onclick={backToBook}>< back</a>
     </div>
   </div>
   
   <script>
+    /* global M */
     var self = this;
     
     var reset = function() {
       console.log("reset lines...");
-      self.lines = [];
+      self.lines = {
+        one: [],
+        two: []
+      };
+    };
+    
+    self.backToBook = function() {
+      riot.route("/" + self.bookId);
     }
     
     M.Events.subscribe("book_changed", reset);
     
     M.Events.subscribe("chapter_changed", function(o){
-      console.log("chapter changed", o);
-      $.get("https://imehesz.firebaseio.com/bookdata.json?bookId=" + o.bookId + "&chapterId=" + o.chapterId, function(data){
-        console.log("AJAX IS BACK!");
-        self.lines = data.lines;
-  	    self.update();
+      var settings = M.Storage.get("settings");
+      
+      var defLines1 = $.Deferred();
+      var defLines2 = $.Deferred();
+      
+      self.bookId = o.bookId;
+
+      $.get(M.Storage.get("dataUrl") + "?bookId=" + o.bookId + "&chapterId=" + o.chapterId + "&lang=" + settings.fromBook, function(data){
+        self.lines["one"] = data.lines;
+        defLines1.resolve();
+      });
+      
+      if (settings.showSecondBook) {
+        $.get(M.Storage.get("dataUrl") + "?bookId=" + o.bookId + "&chapterId=" + o.chapterId + "&lang=" + settings.toBook, function(data){
+          self.lines["two"] = data.lines;
+          defLines2.resolve();
+        });          
+      } else {
+        defLines2.resolve();        
+      }
+      
+      $.when(defLines1, defLines2)
+      .done(function(){
+  	    self.update();        
+      })
+      .fail(function(){
+        alert("Loading lines failed, please try again!");
       });
     });
     
