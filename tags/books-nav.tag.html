@@ -1,0 +1,47 @@
+<books-nav>
+  <div>
+    <a href="javascript:void(0);" onclick={goBack}>< BACK</a>
+    <settings></settings>
+  </div>
+  
+  <script>
+    var self = this;
+    var pages = {
+      BOOKS: "books",
+      CHAPTERS: "chapters",
+      LINES: "lines"
+    };
+    
+    self.backTo = pages.BOOKS;
+    
+    goBack() {
+      console.log("going back to ...", self.backTo);
+      M.Events.publish("navTo", self.backTo);
+    }
+    
+    var updateBackTo = function(backToStr) {
+      self.update({
+        backTo: backToStr
+      });
+    }
+    
+    var backToBooks = function() {
+      updateBackTo(pages.BOOKS);
+    }
+    
+    var backToChapters = function() {
+      updateBackTo(pages.CHAPTERS);
+    }
+    
+    M.Events.subscribe("book_changed", backToBooks);
+    M.Events.subscribe("chapter_changed", backToChapters);
+    
+    M.Events.subscribe("navTo", function(page){
+      if (page == pages.LINES) {
+        backToChapters();
+      } else {
+        backToBooks();
+      }
+    });
+  </script>
+</books-nav>

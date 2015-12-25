@@ -1,67 +1,70 @@
 <lines>
   <div>
-    <div if={lines.one.length >0}>
+    <div if={lines.one.length > 0 && showMe}>
       LINES
       <table>
         <tr each="{line, i in lines.one}">
-          <td><sup>{line.id}</sup> {line.text}</td>
-          <td if={lines.two.length > 0}</td><sup>{lines.two[i].id}</sup> {lines.two[i].text}</td>
+          <td width="50%" if={lines.two.length > 0}><sup>{line.verseId}</sup> {line.text}</td>
+          <td width="100%" if={lines.two.length == 0}><sup>{line.verseId}</sup> {line.text}</td>
+          <td width="50%" if={lines.two.length > 0}</td><sup>{lines.two[i].verseId}</sup> {lines.two[i].text}</td>
         </tr>
       </table>
-      
-      <a href="javascript:void(0);" onclick={backToBook}>< back</a>
     </div>
   </div>
   
   <script>
     /* global M */
     var self = this;
-    
-    var reset = function() {
-      console.log("reset lines...");
-      self.lines = {
-        one: [],
-        two: []
-      };
-    };
-    
-    self.backToBook = function() {
-      riot.route("/" + self.bookId);
+    self.showMe = false;
+    self.lines = {
+      one: [],
+      two: []
     }
     
-    M.Events.subscribe("book_changed", reset);
-    
-    M.Events.subscribe("chapter_changed", function(o){
-      var settings = M.Storage.get("settings");
-      
-      var defLines1 = $.Deferred();
-      var defLines2 = $.Deferred();
-      
-      self.bookId = o.bookId;
-
-      $.get(M.Storage.get("dataUrl") + "?bookId=" + o.bookId + "&chapterId=" + o.chapterId + "&lang=" + settings.fromBook, function(data){
-        self.lines["one"] = data.lines;
-        defLines1.resolve();
-      });
-      
-      if (settings.showSecondBook) {
-        $.get(M.Storage.get("dataUrl") + "?bookId=" + o.bookId + "&chapterId=" + o.chapterId + "&lang=" + settings.toBook, function(data){
-          self.lines["two"] = data.lines;
+    M.Events.subscribe("navTo", function(page){
+      if (page == "lines") {
+        self.showMe = true;
+        var storage = M.Storage;
+        var settings = storage.get("settings");
+        var activeBookId = storage.get("activeBookId");
+        var activeChapterId = storage.get("activeChapterId");
+        
+        var defLines1 = $.Deferred();
+        var defLines2 = $.Deferred();
+        
+        self.bookId = settings.activeBookId;
+  
+        $.get(M.Storage.get("dataUrl") + activeBookId + "/" + activeChapterId + "/?lang=" + settings.fromBook, function(data){
+          self.lines["one"] = data.verses;
+          defLines1.resolve();
+        });
+        
+        if (settings.showSecondBook) {
+          $.get(M.Storage.get("dataUrl") + activeBookId + "/" + activeChapterId + "/?lang=" + settings.toBook, function(data){
+            self.lines["two"] = data.verses;
+            defLines2.resolve();
+          });          
+        } else {
+          self.lines["two"] = [];
           defLines2.resolve();
-        });          
+        }
+        
+        $.when(defLines1, defLines2)
+        .done(function(){
+    	    self.update();        
+        })
+        .fail(function(){
+          alert("Loading lines failed, please try again!");
+        });        
       } else {
-        defLines2.resolve();        
+        self.update({
+          showMe: false,
+          lines: {
+            one: [],
+            two: []
+          }
+        });
       }
-      
-      $.when(defLines1, defLines2)
-      .done(function(){
-  	    self.update();        
-      })
-      .fail(function(){
-        alert("Loading lines failed, please try again!");
-      });
     });
-    
-    reset();
   </script>
 </lines>

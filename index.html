@@ -9,6 +9,7 @@
     <script type="text/javascript" charset="utf-8" src="https://cdnjs.cloudflare.com/ajax/libs/riot/2.3.12/riot+compiler.min.js"></script>
 
     <script type="riot/tag" charset="utf-8" src="tags/settings.tag.html"></script>
+    <script type="riot/tag" charset="utf-8" src="tags/books-nav.tag.html"></script>
     <script type="riot/tag" charset="utf-8" src="tags/lines.tag.html"></script>
     <script type="riot/tag" charset="utf-8" src="tags/chapters.tag.html"></script>
     <script type="riot/tag" charset="utf-8" src="tags/books.tag.html"></script>
@@ -19,6 +20,10 @@
     <h1>Hello C9!</h1>
     <web-app></web-app>
     <script>
+      window.BB_SETTINGS = {
+        dataUrl: "http://198.50.140.69:1337/book/"
+      };
+      
       riot.mount("*");
     </script>
   </body>

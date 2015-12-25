@@ -1,6 +1,6 @@
 <web-app>
   <div>
-    <settings></settings>
+    <books-nav></books-nav>
     WEBAPP
     <books></books>
   </div>
@@ -10,7 +10,7 @@
     /* global riot */
     
     var SETTINGS = typeof BB_SETTINGS != "undefined" ? BB_SETTINGS : {};
-    M.Storage.set("dataUrl", SETTINGS.path || "https://imehesz.firebaseio.com/bookdata.json");
+    M.Storage.set("dataUrl", SETTINGS.dataUrl || "https://imehesz.firebaseio.com/bookdata.json");
     
     var loadBooks = function() {
       var fromBook = M.Storage.get("settings").fromBook;

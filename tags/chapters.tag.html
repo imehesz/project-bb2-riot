@@ -1,46 +1,40 @@
 <chapters>
   <div>
-      <div if={chapters.length > 0}>
+      <span if={chapter.length==0}>loading chapters ...</span>
+      <div if={chapters.length > 0 && showMe}>
       CHAPTERS
-      <div each={chapter in chapters}>
-        <a href="javascript:void(0);" onclick={setChapter}>{chapter}</a>
-      </div>
-      
-      <a href="javascript:void(0);" onclick={backToBooks}>< back</a>
-      <lines></lines>
+      <button each={chapter in chapters} onclick={setChapter}>{chapter}</button>
     </div>
+    <lines></lines>
   </div>
   <script>
-    var self = this;
+    var self = this;        
+    var storage = M.Storage;
+    self.showMe = false;
     
-    var reset = function() {
-      self.chapters = [];
-      self.bookObj = null;
-      self.update();
-    }
-    
-    self.backToBooks = function() {
-      riot.route("/");
-    };
-    
-    M.Events.subscribe("books_loaded", reset);
-    
-    M.Events.subscribe('book_changed', function(bookObj) {
-      console.log("HEY HUY HAY!");
-      self.bookObj = bookObj;
-      
-      var settings = M.Storage.get("settings");
-      
-      $.get(M.Storage.get("dataUrl") + "?bookId=" + bookObj.bookId + "&lang=" + settings.fromBook, function(data){
-        self.chapters = data.chapters;
-  	    self.update();
-      });
-      
-      setChapter(e) {
-        riot.route("/" + self.bookObj.bookId + "/" + e.item.chapter);
+    M.Events.subscribe("navTo", function(page){
+      if (page == "chapters") {
+        console.log("HEY HUY HAY!");
+        // self.bookObj = bookObj;
+        
+        var settings = storage.get("settings");
+        
+        $.get(M.Storage.get("dataUrl") + storage.get("activeBookId") + "/?lang=" + settings.fromBook, function(data){
+    	    self.update({
+    	      chapters: data.chapters,
+    	      showMe: true
+    	    });
+        });
+      } else {
+        self.update({
+          showMe: false
+        });
       }
-  	});
+    });
   	
-  	reset();
+    setChapter(e) {
+      storage.set("activeChapterId", e.item.chapter);
+      M.Events.publish("navTo", "lines");
+    }
   </script>
 </chapters>

@@ -1,17 +1,18 @@
 <books>
   <div>
-    <span if={books.length==0}>loading books ...</span>
-    <div each="{books}">
-      <a href="javascript:void(0);" onclick={setBook}>{shortHeader}</a>
-      <a href="#{id}" onclick={setBook}>{shortHeader}</a>
+    <div if={showMe}>
+      <span if={books.length==0}>loading books ...</span>
+      <button each="{book in books}" onclick={setBook}>{getShortHeader(book)}</button>
     </div>
     <chapters></chapters>
   </div>
   <script>
-    console.log("BOOKS RUNNING!");
     var self = this;
     
     self.books = [];
+    self.showMe = true;
+    
+    var storage = M.Storage;
     
     M.Events.subscribe("books_loaded", function(books){
       console.log("yup, books loaded...", books);
@@ -19,8 +20,25 @@
       self.update();
     });
     
-    this.setBook = function(e) {
-      riot.route("/" + e.item.id);
+    M.Events.subscribe("navTo", function(page){
+      self.showMe = false;
+      if (page == "books") {
+        self.update({
+          showMe: true
+        })
+      }
+    });
+    
+    setBook(e) {
+      storage.set("activeBookId", e.item.book.bookId);
+      M.Events.publish("navTo", "chapters");
     }
+    
+    getShortHeader(o) {
+      return o.shortHeader ? 
+        o.shortHeader : 
+        o.headerLong.replace(/\ /g, "").substring(0,5);
+    }
+    
   </script>
 </books>
