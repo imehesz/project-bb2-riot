@@ -1,7 +1,13 @@
 <book-info>
-  <div>
-    {label.bookOne} {label.chapter} {label.bookTwo}
-  </div>
+  <span if={label.bookOne} class="teal lighten-2 white-text info">
+    {label.bookOne} <strong>{label.chapter}</strong> {label.bookTwo? "/ " + label.bookTwo:""}
+  </span>
+  
+  <style>
+    .info {
+      padding: 4px 5px;
+    }
+  </style>
   
   <script>
     var self = this;

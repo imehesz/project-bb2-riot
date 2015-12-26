@@ -1,7 +1,6 @@
 <lines>
   <div>
     <div if={lines.one.length > 0 && showMe}>
-      LINES
       <table>
         <tr each="{line, i in lines.one}">
           <td width="50%" if={lines.two.length > 0}><sup>{line.verseId}</sup> {line.text}</td>

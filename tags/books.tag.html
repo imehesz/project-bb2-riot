@@ -1,8 +1,17 @@
 <books>
-  <div>
+  <div class="row">
     <div if={showMe}>
+      <h2>Project BB!</h2>
       <span if={books.length==0}>loading books ...</span>
-      <button each="{book in books}" onclick={setBook}>{getShortHeader(book)}</button>
+      <div each="{book in books}" class="col s4 m2 l1">
+        <a 
+          onclick={setBook}
+          href="javascript:void(0)"
+          title={book.headerLong}
+          class="chip">
+            {getShortHeader(book)}
+        </a>
+      </div>
     </div>
     <chapters></chapters>
   </div>

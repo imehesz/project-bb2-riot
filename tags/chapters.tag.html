@@ -1,9 +1,15 @@
 <chapters>
-  <div>
+  <div class="row">
       <span if={chapter.length==0}>loading chapters ...</span>
       <div if={chapters.length > 0 && showMe}>
-      CHAPTERS
-      <button each={chapter in chapters} onclick={setChapter}>{chapter}</button>
+      <div each={chapter in chapters} class="col s4 m2 l1">
+        <a 
+          onclick={setChapter}
+          href="javascript:void(0);" 
+          class="chip">
+            {chapter}
+        </a>
+      </div>
     </div>
     <lines></lines>
   </div>

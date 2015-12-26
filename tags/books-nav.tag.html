@@ -1,9 +1,35 @@
 <books-nav>
-  <div>
-    <book-info></book-info>
-    <a if={backTo} href="javascript:void(0);" onclick={goBack}>< BACK</a>
-    <settings></settings>
+  <div class="row">
+    <div class="col s6">
+      <settings class="left"></settings>
+      <a 
+        onclick={goBack}
+        if={backTo} 
+        href="javascript:void(0);"  
+        class="orange lighten-5">
+          &#8634; BACK
+      </a>
+    </div>
+    <div class="col s6">
+      <div class="right">
+        <book-info></book-info>
+      </div>
+    </div>
   </div>
+  
+  <style>
+    a {
+      color: red;
+      font-weight: 300;
+      font-size: 80%;
+      padding: 5px;
+      margin-left: 5px;
+    }
+    
+    a:hover {
+      decoration: underline;
+    }
+  </style>
   
   <script>
     var self = this;

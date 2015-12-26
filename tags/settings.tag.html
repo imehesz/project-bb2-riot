@@ -1,13 +1,15 @@
 <settings>
   <div>
-    <div title="Toggle Settings">
-      <input type="checkbox" checked="{ui.on}" onchange="{toggleOn}"/> 
-    </div>
-    <div if={ui.on}>
-      <h3>Settings</h3>
-      <form>
+    <a 
+      onclick={toggleOn}
+      href="javascript:void(0);"  
+      class="orange lighten-5">
+        &#9881; SETTINGS
+    </a>
+    <div if={ui.on} class="row">
+      <form class="col s12">
         <label for="fromBook">From Book</label>
-        <select id="fromBook" onChange="{fromBookChanged}">
+        <select id="fromBook" onChange="{fromBookChanged}" class="browser-default">
           <option 
             each={languageOptions} 
             value={id} 
@@ -16,9 +18,9 @@
               {label}
           </option>
         </select>
-        <br />
+
         <label for="toBook">To Book</label>
-        <select id="toBook" onchange="{toBookChanged}">
+        <select id="toBook" onchange="{toBookChanged}" class="browser-default">
           <option 
             each={languageOptions} 
             value={id} 
@@ -27,17 +29,29 @@
               {label}
           </option>
         </select>
-        <br />
+        
         <label for="theme">Theme</label>
-        <select id="theme" onchange="{themeChanged}">
+        <select id="theme" onchange="{themeChanged}" class="browser-default">
           <option each="{theme in themeOptions}" value="{theme}">{ui.capitalize(theme)}</option>
         </select>
-        <br />
+
+
         <label for="showsecond">Show Second Book</label>
-        <input type="checkbox" checked="{settings.showSecondBook}" onchange="{toggleSecondBook}"/>
+        
+        <!-- Switch -->
+        <div class="switch">
+          <label>
+            Off
+            <input 
+              onchange="{toggleSecondBook}"
+              checked="{settings.showSecondBook}" 
+              type="checkbox" />
+            <span class="lever"></span>
+            On
+          </label>
+        </div>
       </form>
     </div>
-    <hr>
   </div>
 
   <script>
