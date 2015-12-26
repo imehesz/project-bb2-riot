@@ -1,7 +1,7 @@
 <books-nav>
   <div>
     <book-info></book-info>
-    <a href="javascript:void(0);" onclick={goBack}>< BACK</a>
+    <a if={backTo} href="javascript:void(0);" onclick={goBack}>< BACK</a>
     <settings></settings>
   </div>
   
@@ -14,7 +14,7 @@
     };
 
     var storage = M.Storage;
-    self.backTo = pages.BOOKS;
+    self.backTo = "";
     
     goBack() {
       M.Events.publish("navTo", self.backTo);
@@ -34,14 +34,20 @@
       updateBackTo(pages.CHAPTERS);
     }
     
+    var backToNothing = function() {
+      updateBackTo("");
+    }
+    
     M.Events.subscribe("book_changed", backToBooks);
     M.Events.subscribe("chapter_changed", backToChapters);
     
     M.Events.subscribe("navTo", function(page){
       if (page == pages.LINES) {
         backToChapters();
-      } else {
+      } else if (page == pages.CHAPTERS) {
         backToBooks();
+      } else {
+        backToNothing();
       }
     });
   </script>
