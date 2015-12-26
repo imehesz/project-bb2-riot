@@ -13,12 +13,34 @@
     M.Storage.set("dataUrl", SETTINGS.dataUrl || "https://imehesz.firebaseio.com/bookdata.json");
     
     var loadBooks = function() {
-      var fromBook = M.Storage.get("settings").fromBook;
-      console.log("MOOOOOOOOOOOOOO", fromBook);
+      var storage = M.Storage;
+      var s = storage.get("settings");
       
-      $.get(M.Storage.get("dataUrl") + "?lang=" + fromBook, function(data){
-        M.Events.publish("books_loaded", data.books);
-      });      
+      var fromBook = s.fromBook;
+      var toBook = s.toBook;
+      
+      var defBook1 = $.Deferred();
+      var defBook2 = $.Deferred();
+      
+      // we gotta load both languages for the headers
+      // and cache them in our storage
+      $.get(storage.get("dataUrl") + "?lang=" + fromBook, function(data){
+        storage.set("booksOne", data.books);
+        defBook1.resolve();
+      });
+      
+      $.get(storage.get("dataUrl") + "?lang=" + toBook, function(data){
+        storage.set("booksTwo", data.books);
+        defBook2.resolve();
+      });
+      
+      $.when(defBook1, defBook2)
+      .done(function(){
+        M.Events.publish("books_loaded", storage.get("booksOne"));
+      })
+      .fail(function(){
+        alert("Loading books failed, please try again!");
+      });
     }
     
     var router = function(bookId, chapterId) {

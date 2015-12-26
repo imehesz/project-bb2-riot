@@ -15,7 +15,6 @@
     var storage = M.Storage;
     
     M.Events.subscribe("books_loaded", function(books){
-      console.log("yup, books loaded...", books);
       self.books = books;
       self.update();
     });
@@ -31,6 +30,7 @@
     
     setBook(e) {
       storage.set("activeBookId", e.item.book.bookId);
+      storage.set("activeBookObj", e.item.book);
       M.Events.publish("navTo", "chapters");
     }
     

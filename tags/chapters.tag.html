@@ -14,9 +14,6 @@
     
     M.Events.subscribe("navTo", function(page){
       if (page == "chapters") {
-        console.log("HEY HUY HAY!");
-        // self.bookObj = bookObj;
-        
         var settings = storage.get("settings");
         
         $.get(M.Storage.get("dataUrl") + storage.get("activeBookId") + "/?lang=" + settings.fromBook, function(data){

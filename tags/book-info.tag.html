@@ -1,0 +1,56 @@
+<book-info>
+  <div>
+    {label.bookOne} {label.chapter} {label.bookTwo}
+  </div>
+  
+  <script>
+    var self = this;
+    var storage = M.Storage;
+    
+    var getBookInfo = function(books, bookId, field) {
+      return books.map(function(el){
+                        if (el.bookId == bookId) return el[field];
+                      }).join("");
+    };
+    
+    var resetLabel = function() {
+      self.update({
+        label : {
+          bookOne: "",
+          bookTwo: "",
+          chapter: ""
+        }
+      });
+    }
+    
+    M.Events.subscribe("navTo", function(page){
+      resetLabel();
+      
+      if (page == "lines") {
+        self.update({
+          label: {
+            bookOne: getBookInfo( storage.get("booksOne"), 
+                                storage.get("activeBookId"), 
+                                "headerLong"),
+            bookTwo: getBookInfo( storage.get("booksTwo"), 
+                                storage.get("activeBookId"), 
+                                "headerLong"),
+            chapter: storage.get("activeChapterId")
+          }
+        });
+      } else if (page == "chapters") {
+        self.update({
+          label: {
+            bookOne: getBookInfo( storage.get("booksOne"), 
+                                storage.get("activeBookId"), 
+                                "headerLong"),
+            bookTwo: getBookInfo( storage.get("booksTwo"), 
+                                storage.get("activeBookId"), 
+                                "headerLong")
+          }
+        });
+      }
+    });
+    
+  </script>
+</book-info>
