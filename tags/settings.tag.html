@@ -1,56 +1,70 @@
 <settings>
   <div>
     <a 
-      onclick={toggleOn}
+      onclick={openModal}
       href="javascript:void(0);"  
       class="orange lighten-5">
         &#9881; SETTINGS
     </a>
-    <div if={ui.on} class="row">
-      <form class="col s12">
-        <label for="fromBook">From Book</label>
-        <select id="fromBook" onChange="{fromBookChanged}" class="browser-default">
-          <option 
-            each={languageOptions} 
-            value={id} 
-            disabled={settings.toBook==id}
-            selected={settings.fromBook==id}>
-              {label}
-          </option>
-        </select>
-
-        <label for="toBook">To Book</label>
-        <select id="toBook" onchange="{toBookChanged}" class="browser-default">
-          <option 
-            each={languageOptions} 
-            value={id} 
-            disabled={settings.fromBook==id}
-            selected={settings.toBook==id}>
-              {label}
-          </option>
-        </select>
-        
-        <label for="theme">Theme</label>
-        <select id="theme" onchange="{themeChanged}" class="browser-default">
-          <option each="{theme in themeOptions}" value="{theme}">{ui.capitalize(theme)}</option>
-        </select>
-
-
-        <label for="showsecond">Show Second Book</label>
-        
-        <!-- Switch -->
-        <div class="switch">
-          <label>
-            Off
-            <input 
-              onchange="{toggleSecondBook}"
-              checked="{settings.showSecondBook}" 
-              type="checkbox" />
-            <span class="lever"></span>
-            On
-          </label>
-        </div>
-      </form>
+    
+    <div id="modal1" class="modal modal-fixed-footer">
+      <div class="modal-content">
+        <h4>Settings</h4>
+        <p>
+          <form class="col s12">
+            <label for="fromBook">From Book</label>
+            <select id="fromBook" onChange="{fromBookChanged}" class="browser-default">
+              <option 
+                each={languageOptions} 
+                value={id} 
+                disabled={settings.toBook==id}
+                selected={settings.fromBook==id}>
+                  {label}
+              </option>
+            </select>
+    
+            <label for="toBook">To Book</label>
+            <select id="toBook" onchange="{toBookChanged}" class="browser-default">
+              <option 
+                each={languageOptions} 
+                value={id} 
+                disabled={settings.fromBook==id}
+                selected={settings.toBook==id}>
+                  {label}
+              </option>
+            </select>
+            
+            <label for="theme">Theme</label>
+            <select id="theme" onchange="{themeChanged}" class="browser-default">
+              <option each="{theme in themeOptions}" value="{theme}">{ui.capitalize(theme)}</option>
+            </select>
+    
+    
+            <label for="showsecond">Show Second Book</label>
+            
+            <!-- Switch -->
+            <div class="switch">
+              <label>
+                Off
+                <input 
+                  onchange="{toggleSecondBook}"
+                  checked="{settings.showSecondBook}" 
+                  type="checkbox" />
+                <span class="lever"></span>
+                On
+              </label>
+            </div>
+          </form>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <a 
+          onclick={save}
+          href="javascript:void(0);" 
+          class="modal-action modal-close waves-effect waves-green btn">
+            Save
+        </a>
+    </div>
     </div>
   </div>
 
@@ -62,7 +76,6 @@
     var SETTINGS = typeof BB_SETTINGS != "undefined" ? BB_SETTINGS : {};
     
     self.ui = {
-      on: false,
       capitalize: function(str) {
         return str[0].toUpperCase() + str.substr(1,str.length);
       }
@@ -93,35 +106,36 @@
       M.Events.publish("settings_init", self.settings);
     }
     
-    console.log(M.Storage.get("settings"));
-    
     var oldSettings = JSON.stringify(self.settings);
     
-    self.fromBookChanged = function(el) {
+    fromBookChanged(el) {
       self.settings.fromBook = $(el.target).val();
     };
     
-    self.toBookChanged = function(el) {
+    toBookChanged(el) {
       self.settings.toBook = $(el.target).val();
     };
     
-    self.themeChanged = function(el) {
+    themeChanged(el) {
       self.settings.theme = $(el.target).val();
     };
     
-    self.toggleSecondBook = function(el) {
+    toggleSecondBook(el) {
       self.settings.showSecondBook = !self.settings.showSecondBook;
     };
     
-    self.toggleOn = function() {
-      self.ui.on = !self.ui.on;
-      
-      if (!self.ui.on && oldSettings != JSON.stringify(self.settings)) {
+    save() {
+      if (oldSettings != JSON.stringify(self.settings)) {
         console.log(JSON.parse(oldSettings), self.settings);
         
         // TODO save it to localstorage
         oldSettings = JSON.stringify(self.settings);
-      }
+        $("body").attr("class", self.settings.theme);
+      }      
+    }
+    
+    openModal() {
+      $('#modal1').openModal();
     };
   </script>
 </settings>

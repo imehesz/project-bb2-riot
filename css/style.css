@@ -1,0 +1,19 @@
+.chip {
+  margin-top: 5px;
+}
+
+.light {}
+
+.dark {
+  background-color: #000;
+  color: #fff;
+}
+
+.dark form {
+  color: #000;
+}
+
+.papyrus {
+  background: url(http://i.imgur.com/bTWBaVV.gif);
+  color: maroon;
+}
