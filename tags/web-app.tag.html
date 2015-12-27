@@ -43,7 +43,7 @@
     }
     
     var router = function(bookId, chapterId) {
-      console.log("ROUTER HEY!", bookId, chapterId);
+      // console.log("ROUTER HEY!", bookId, chapterId);
       
       if (bookId && !chapterId) {
         M.Events.publish("book_changed", {bookId: bookId});

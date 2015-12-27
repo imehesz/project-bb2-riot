@@ -144,7 +144,7 @@
     
     save() {
       if (oldSettings != JSON.stringify(self.settings)) {
-        console.log(JSON.parse(oldSettings), self.settings);
+        // console.log(JSON.parse(oldSettings), self.settings);
         
         // TODO save it to localstorage
         oldSettings = JSON.stringify(self.settings);
