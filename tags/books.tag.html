@@ -29,7 +29,10 @@
     });
     
     M.Events.subscribe("navTo", function(page){
-      self.showMe = false;
+      self.update({
+        showMe: false
+      });
+      
       if (page == "books") {
         self.update({
           showMe: true

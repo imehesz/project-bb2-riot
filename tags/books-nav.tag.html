@@ -64,9 +64,6 @@
       updateBackTo("");
     }
     
-    M.Events.subscribe("book_changed", backToBooks);
-    M.Events.subscribe("chapter_changed", backToChapters);
-    
     M.Events.subscribe("navTo", function(page){
       if (page == pages.LINES) {
         backToChapters();

@@ -54,6 +54,17 @@
                 On
               </label>
             </div>
+            
+            <div>
+              <h5>History</h5>
+              <span each={book in settings.last10}>
+                <a
+                  onclick={jumpTo}
+                  href="javascript:void(0);">
+                    {book.header}: {book.chapterId}
+                </a>
+              </span>
+            </div>
           </form>
         </p>
       </div>
@@ -67,6 +78,12 @@
     </div>
     </div>
   </div>
+  
+  <style type="text/css">
+    h5 {
+      margin-top: 25px;
+    }
+  </style>
 
   <script>
     /* global M */
@@ -95,7 +112,8 @@
       fromBook: "esv",
       toBook: "nhun",
       theme: "light",
-      showSecondBook: true
+      showSecondBook: true,
+      last10: []
     };
     
     if (M.Storage.get("settings")) {
@@ -137,5 +155,44 @@
     openModal() {
       $('#modal1').openModal();
     };
+    
+    jumpTo(where) {
+      M.Storage.set("activeBookId", where.item.book.bookId);
+      M.Storage.set("activeChapterId", where.item.book.chapterId);
+      $("#modal1").closeModal();
+      M.Events.publish("navTo", "lines");
+    }
+    
+    var updateLast10 = function() {
+      var idx = -1;
+      var last10 = self.settings.last10;
+      var bookId = M.Storage.get("activeBookId");
+      var chapterId = M.Storage.get("activeChapterId");
+      
+      // we remove the book if it's already in the list
+      for(var i=0; i<last10.length; i++) {
+        var item = last10[i];
+        if (item.bookId == bookId && item.chapterId == chapterId) {
+          last10.splice(i,1);
+          break;
+        }
+      }
+      
+      self.settings.last10.unshift({
+        header: M.Storage.get("booksOne").map(function(el){
+          // TODO create a utility class
+          if (el.bookId == bookId) return el["headerLong"];
+        }).join(""),
+        bookId: bookId,
+        chapterId: chapterId
+      });      
+    }
+    
+    M.Events.subscribe("navTo", function(page) {
+      if (page == "lines") {
+        updateLast10();
+        M.Storage.set("settings", self.settings);
+      }
+    });
   </script>
 </settings>
