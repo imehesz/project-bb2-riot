@@ -1,16 +1,17 @@
 <books-nav>
   <div class="row">
-    <div class="col s6">
+    <div class="col s4 m6">
       <settings class="left"></settings>
       <a 
         onclick={goBack}
         if={backTo} 
         href="javascript:void(0);"  
         class="btn orange lighten-5">
-          <span class="red-text">&#8634; BACK</span>
+          <span class="red-text hide-on-small-only">BACK</span>
+          <span class="red-text hide-on-med-and-up">&#8634;</span>
       </a>
     </div>
-    <div class="col s6">
+    <div class="col s8 m6">
       <div class="right">
         <book-info></book-info>
       </div>
