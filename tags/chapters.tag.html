@@ -2,12 +2,12 @@
   <div class="row">
       <span if={chapter.length==0}>loading chapters ...</span>
       <div if={chapters.length > 0 && showMe}>
-      <div each={chapter in chapters} class="col s4 m2 l1">
+      <div each={chapter in chapters} class="col s6 m4 l2">
         <a 
           onclick={setChapter}
-          href="javascript:void(0);" 
-          class="chip">
-            {chapter}
+          href="javascript:void(0);"
+          class="btn chapter yellow darken-2">
+            <span class="grey-text text-darken-4">{chapter}</span>
         </a>
       </div>
     </div>

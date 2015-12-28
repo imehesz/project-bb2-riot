@@ -1,5 +1,5 @@
-.chip {
-  margin-top: 5px;
+.btn.chapter, .btn.book {
+  margin-top: 15px;
 }
 
 .light {}

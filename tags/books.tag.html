@@ -3,13 +3,13 @@
     <div if={showMe}>
       <h2>Read ...</h2>
       <span if={books.length==0}>loading books ...</span>
-      <div each="{book in books}" class="col s4 m2 l1">
+      <div each="{book in books}" class="col s6 m4 l2">
         <a 
           onclick={setBook}
-          href="javascript:void(0)"
+          href="javascript:void(0);"
           title={book.headerLong}
-          class="chip">
-            {getShortHeader(book)}
+          class="btn book yellow darken-2">
+            <span class="grey-text text-darken-4">{getShortHeader(book)}</span>
         </a>
       </div>
     </div>
